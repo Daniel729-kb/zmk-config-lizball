@@ -1,0 +1,88 @@
+/*
+ * Copyright (c) 2025 ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <2>;
+        rows = <2>;
+        map = <
+            RC(0,0) RC(0,1)
+            RC(1,0) RC(1,1)
+        >;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        input-gpios
+            = <&gpio0 5 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            , <&gpio0 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>
+            ;
+    };
+
+    sensors {
+        compatible = "gpio-keys";
+        trackball: trackball {
+            compatible = "pmw3610-trackball";
+            spi-max-frequency = <2000000>;
+            reg = <0>;
+            cs-gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+            irq-gpios = <&gpio0 20 GPIO_ACTIVE_HIGH>;
+            
+            /* PMW3610 requires the MOSI/MISO/SCLK pins */
+            spi-dev = <&spi0>;
+            
+            /* specify trackball physical placement */
+            trackball-position = "center"; /* The placement of the trackball (center, left, right) */
+            
+            /* for 25mm trackball */
+            trackball-diameter-mm = <25>;
+            
+            /* default DPI setting, can be changed later via keycode */
+            default-dpi = <800>;
+        };
+    };
+
+    vbatt {
+        compatible = "zmk,battery-voltage-divider";
+        io-channels = <&adc 2>;  // ADC channel connected to battery voltage
+        output-ohms = <2000000>; // 2 MΩ
+        full-ohms = <3000000>;   // 2 MΩ + 1 MΩ
+        
+        // For a 250mAh battery (3.7V nominal)
+        power-supply = "battery";
+    };
+
+    battery: battery {
+        compatible = "zmk,battery";
+        label = "BATTERY";
+        voltage = <3700>; // 3.7V nominal
+        capacity = <250>; // 250mAh
+    };
+};
+
+&spi0 {
+    status = "okay";
+    compatible = "nordic,nrf-spim";
+    sck-pin = <19>;
+    mosi-pin = <21>;
+    miso-pin = <22>;
+    
+    cs-gpios = <&gpio0 17 GPIO_ACTIVE_LOW>;
+};
+
+&adc {
+    status = "okay";
+};

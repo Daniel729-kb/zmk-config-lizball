@@ -1,0 +1,15 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+    - name: trackball-fork
+      url-base: https://github.com/YOU_NEED_TO_FORK_AND_ADD_TRACKBALL_SUPPORT
+
+  projects:
+    - name: zmk
+      remote: trackball-fork
+      revision: main
+      import: app/west.yml
+
+  self:
+    path: config

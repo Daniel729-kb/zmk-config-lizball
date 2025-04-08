@@ -1,0 +1,12 @@
+# Copyright (c) 2025 ZMK Contributors
+# SPDX-License-Identifier: MIT
+
+if SHIELD_LIZBALL
+
+config ZMK_KEYBOARD_NAME
+    default "Lizball"
+
+config PMW3610
+    default y
+
+endif
