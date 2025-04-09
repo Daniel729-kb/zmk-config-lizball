@@ -1,0 +1,6 @@
+if SHIELD_LIZBALL
+
+config ZMK_KEYBOARD_NAME
+    default "LizBall"
+
+endif
