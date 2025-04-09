@@ -1,8 +1,0 @@
-file_format: "1"
-id: lizball
-name: LizBall
-type: shield
-url: https://github.com/yourusername/zmk-config-lizball
-requires: [seeeduino_xiao_ble]
-features:
-  - keys

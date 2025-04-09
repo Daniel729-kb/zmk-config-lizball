@@ -1,2 +1,0 @@
-config SHIELD_LIZBALL
-    def_bool $(shields_list_contains,lizball)
