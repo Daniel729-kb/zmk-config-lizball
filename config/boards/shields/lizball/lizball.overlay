@@ -19,7 +19,7 @@
         compatible = "zmk,matrix-transform";
         rows = <1>;
         columns = <3>;
-        map = 
+        map = <
             RC(0,0) RC(0,1) RC(0,2)
         >;
     };
