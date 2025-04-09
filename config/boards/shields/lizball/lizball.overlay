@@ -1,11 +1,8 @@
 #include <dt-bindings/zmk/matrix_transform.h>
-#include <dt-bindings/led/led.h>
-#include <physical_layouts.dtsi>
 
 / {
     chosen {
         zmk,kscan = &default_kscan;
-        zmk,physical-layout = &physical_layout0;
         zmk,underglow = &led_strip;
     };
 
@@ -17,18 +14,6 @@
             <&xiao_d 10 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Button 1
             <&xiao_d 9  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Button 2
             <&xiao_d 8  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;  // Button 3
-    };
-
-    physical_layout0: physical_layout_0 {
-        compatible = "zmk,physical-layout";
-        display-name = "LizBall Physical Layout";
-        kscan = <&default_kscan>;
-        transform = <&default_transform>;
-
-        keys = 
-            <&key_physical_attrs 100 100   0    0   0 0 0>,  // Button 1 (1U)
-            <&key_physical_attrs 100 100 100    0   0 0 0>,  // Button 2 (1U)
-            <&key_physical_attrs 100 100 200    0   0 0 0>;  // Button 3 (1U)
     };
 
     default_transform: keymap_transform0 {
@@ -45,16 +30,6 @@
         device = <&trackball>;
         scroller {
             layers = <2>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
-        };
-    };
-
-    // Orientation detection
-    sensors {
-        compatible = "zmk,keymap-sensors";
-        orientation_sensor: orientation_sensor {
-            compatible = "zmk,orientation-sensor";
-            triggers-per-rotation = <1>;
         };
     };
 };
@@ -102,31 +77,22 @@
 };
 
 // SK6812mini-E RGB Underglow
-&gpio0 {
+&spi1 {
     status = "okay";
-};
+    mosi-pin = <0>; // D0/P0.02
+    // Unused, but must be defined to keep driver happy
+    sck-pin = <20>;
+    miso-pin = <22>;
 
-&xiao_d {
-    // Using D0 as the RGB data pin
-    rgb_di: rgb_di {
-        gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
-    };
-};
-
-// LED strip configuration
-&led_strip {
-    chain-length = <3>; // 3 SK6812mini-E LEDs
-    rgb_di = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
-
-    led_strip: ws2812 {
+    led_strip: ws2812@0 {
         compatible = "worldsemi,ws2812-spi";
         label = "WS2812";
 
-        // SPI
+        /* SPI */
         reg = <0>;
         spi-max-frequency = <4000000>;
 
-        // LED strip properties
+        /* WS2812 */
         chain-length = <3>; // 3 LEDs
         spi-one-frame = <0x70>;
         spi-zero-frame = <0x40>;
