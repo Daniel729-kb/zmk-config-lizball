@@ -6,13 +6,22 @@ manifest:
       url-base: https://github.com/petejohanson
     - name: inorichi
       url-base: https://github.com/inorichi
+  defaults:
+    remote: zmkfirmware
   projects:
     - name: zmk
       remote: petejohanson
       revision: feat/pointers-move-scroll
-      import: app/west.yml
+      import:
+        name-allowlist:
+          - cmsis
+          - hal_nordic
+          - mbedtls
+          - nanopb
+      clone-depth: 1
     - name: zmk-pmw3610-driver
       remote: inorichi
       revision: main
+      clone-depth: 1
   self:
     path: config

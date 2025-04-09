@@ -41,10 +41,6 @@
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        scroller {
-            layers = <2>;
-            input-processors = <&zip_xy_to_scroll_mapper>;
-        };
     };
 };
 
@@ -105,20 +101,15 @@
 
 &xiao_spi { status = "disabled"; };
 
-&xiao_i2c {
-    status = "disabled";
-    
-    led_strip: ws2812@0 {
-        compatible = "worldsemi,ws2812-spi";
-        
-        /* SPI */
-        reg = <0>; /* ignored, but necessary for SPI bindings */
-        spi-max-frequency = <4000000>;
-        
-        /* WS2812 */
+&gpio0 {
+    status = "okay";
+};
+
+/ {
+    led_strip: ws2812 {
+        compatible = "worldsemi,ws2812-gpio";
+        gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
         chain-length = <3>; /* number of LEDs */
-        spi-one-frame = <0x70>;
-        spi-zero-frame = <0x40>;
         color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
 };

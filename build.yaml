@@ -2,3 +2,13 @@
 include:
   - board: seeeduino_xiao_ble
     shield: lizball
+  
+# Configure which outputs and file formats should be produced:
+output:
+  uf2-only: true
+  generate-build-info: false
+  
+# Optimize the build process
+build-options:
+  optimize-for-size: true
+  use-cache: true

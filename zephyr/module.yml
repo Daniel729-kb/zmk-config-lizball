@@ -1,0 +1,11 @@
+build:
+  settings:
+    board_root: .
+    dts_root: .
+    module_repo: ..
+    extra_modules:
+      - ../zmk-pmw3610-driver
+
+app:
+  features:
+    - config
