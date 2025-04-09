@@ -1,38 +1,6 @@
-name: Build
-
+name: Build ZMK firmware
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    container:
-      image: zmkfirmware/zmk-build-arm:3.5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Cache west modules
-        uses: actions/cache@v3
-        with:
-          path: |
-            modules/
-            tools/
-            zephyr/
-            bootloader/
-            zmk/
-          key: ${{ runner.os }}-modules-${{ hashFiles('manifest-dir/west.yml') }}
-          restore-keys: |
-            ${{ runner.os }}-modules-
-      - name: West Init
-        run: west init -l config
-      - name: West Update
-        run: west update
-      - name: West Zephyr export
-        run: west zephyr-export
-      - name: West Build (LizBall)
-        run: west build -s zmk/app -b seeeduino_xiao_ble -- -DSHIELD=lizball -DZMK_CONFIG="${GITHUB_WORKSPACE}/config"
-      - name: LizBall Artifact upload
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: lizball-zmk
-          path: build/zephyr/zmk.uf2
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main

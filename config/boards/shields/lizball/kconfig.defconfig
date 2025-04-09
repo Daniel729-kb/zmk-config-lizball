@@ -1,6 +1,16 @@
 if SHIELD_LIZBALL
 
 config ZMK_KEYBOARD_NAME
-    default "LizBall"
+    default "LizBall Trackball"
+
+# Default orientation setting
+config LIZBALL_DEFAULT_ORIENTATION
+    int "Default orientation mode on power-up"
+    default 0
+    range 0 1
+    help
+      Select the default orientation mode at power-on.
+      0: Upward facing (Button 3 is Left Click)
+      1: Downward facing (Button 1 is Left Click)
 
 endif

@@ -1,2 +1,4 @@
-board: [ "seeeduino_xiao_ble" ]
-shield: [ "lizball" ]
+---
+include:
+  - board: seeeduino_xiao_ble
+    shield: lizball
