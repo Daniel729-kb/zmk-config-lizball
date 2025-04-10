@@ -2,13 +2,12 @@
 
 / {
     chosen {
-        zmk,kscan = &kscan0;
-        zmk,matrix_transform = &default_transform;
+        zmk,kscan = &default_kscan;
     };
 
-    kscan0: kscan {
+    default_kscan: kscan {
         compatible = "zmk,kscan-gpio-direct";
-        label = "KSCAN";
+        label = "default_kscan";
 
         input-gpios =
             <&xiao_d 10 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Switch 1 (left)
@@ -28,8 +27,8 @@
     encoder: encoder {
         compatible = "alps,ec11";
         label = "ENCODER";
-        a-gpios = <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  // P0.29 (A3/D3)
-        b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;  // P0.28 (A2/D2) 
+        a-gpios = <&xiao_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&xiao_d 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
         resolution = <4>;
     };
 
@@ -50,17 +49,17 @@
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,  // SCLK - P0.05 (D5/SCL)
-                   <NRF_PSEL(SPIM_MOSI, 0, 4)>,  // SDIO - P0.04 (D4/SDA)
-                   <NRF_PSEL(SPIM_MISO, 0, 4)>;  // SDIO - Same pin (bidirectional)
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
+                  <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                  <NRF_PSEL(SPIM_MISO, 0, 4)>;
         };
     };
 
     spi0_sleep: spi0_sleep {
         group1 {
             psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,
-                   <NRF_PSEL(SPIM_MOSI, 0, 4)>,
-                   <NRF_PSEL(SPIM_MISO, 0, 4)>;
+                  <NRF_PSEL(SPIM_MOSI, 0, 4)>,
+                  <NRF_PSEL(SPIM_MISO, 0, 4)>;
             low-power-enable;
         };
     };
@@ -74,16 +73,15 @@
     pinctrl-0 = <&spi0_default>;
     pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
-    cs-gpios = <&xiao_d 7 GPIO_ACTIVE_LOW>;  // P1.12 (D7/RX)
+    cs-gpios = <&xiao_d 7 GPIO_ACTIVE_LOW>;
     
     trackball: trackball@0 {
         status = "okay";
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        irq-gpios = <&xiao_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  // P1.11 (D6/TX)
-        
-        scroll-layers = <2>;    // Layer 2 for scrolling
-        snipe-layers = <3>;     // Layer 3 for precision movement
+        irq-gpios = <&xiao_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        scroll-layers = <2>;
     };
 };
