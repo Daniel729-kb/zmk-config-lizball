@@ -1,1 +1,1 @@
-# This file intentionally left empty
+// This file is intentionally empty to be replaced by the externally imported driver
