@@ -37,6 +37,11 @@
         compatible = "zmk,keymap-sensors";
         sensors = <&encoder>;
     };
+
+    trackball_listener {
+        compatible = "zmk,input-listener";
+        device = <&trackball>;
+    };
 };
 
 &pinctrl {
