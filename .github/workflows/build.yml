@@ -3,4 +3,34 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+    container:
+      image: zmkfirmware/zmk-build-arm:stable
+    env:
+      PYTHON_VERSION: "3.9"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      
+      - name: West Init
+        run: west init -l config
+      
+      - name: West Update
+        run: west update
+      
+      - name: West Zephyr Export
+        run: west zephyr-export
+      
+      - name: West Build
+        run: west build -b seeeduino_xiao_ble -d build/lizball -- -DSHIELD=lizball
+      
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: lizball-firmware
+          path: build/lizball/zephyr/zmk.uf2

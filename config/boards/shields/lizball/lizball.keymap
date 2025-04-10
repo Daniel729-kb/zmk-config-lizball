@@ -11,28 +11,7 @@
             bindings = <
                 &kp A      &kp B      &kp C
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DOWN>;
-        };
-        
-        mouse_layer {
-            bindings = <
-                &mkp LCLK   &mkp RCLK   &trans
-            >;
-            sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
-        };
-        
-        scroll_layer {
-            bindings = <
-                &trans    &trans    &trans
-            >;
-            sensor-bindings = <&inc_dec_kp C_AC_SCROLL_UP C_AC_SCROLL_DOWN>;
-        };
-        
-        snipe_layer {
-            bindings = <
-                &mkp LCLK   &mkp RCLK   &trans
-            >;
-            sensor-bindings = <&inc_dec_kp LEFT RIGHT>;
+            sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
     };
 };
