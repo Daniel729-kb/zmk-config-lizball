@@ -1,59 +1,47 @@
 # LizBall - ZMK Firmware Configuration
 
-This repository contains the ZMK firmware configuration for the LizBall wireless trackball keyboard.
+This repository contains the ZMK firmware configuration for the LizBall, a custom 3-key wireless trackball keyboard with a rotary encoder.
 
 ## Hardware Specifications
 
-- **MCU**: Seeed Studio Xiao nRF52840
-- **Optical Sensor**: PMW3610
-- **Keys**: 3 Kailh V2 Low Profile Switches
-- **Trackball**: 25mm
-- **Rotary Encoder**: EC12
-- **RGB Underglow**: 3x SK6812mini-E
-- **Battery**: LiPo or AAA batteries
-- **Shape**: Rectangle, designed to be placed above/below a low-profile keyboard
+- **MCU**: Seeed Studio Xiao NRF52840
+- **Optical Sensor**: PMW3610 (25mm trackball)
+- **Keys**: 3 Kailh V2 Low Profile Switches (1.25u keycaps)
+- **Rotary Encoder**: EC12 with push button
+- **RGB Underglow**: 3x SK6812mini-E LEDs
+- **Battery**: LiPo or AAA size
+- **Form Factor**: Rectangle shape, designed to be placed above or below a low-profile keyboard
 
 ## Features
 
-- Wireless Bluetooth connection with up to 5 profiles
-- Trackball with adjustable sensitivity
-- Multiple layers for different functions
-- Scroll mode for the trackball
-- Precision/snipe mode for detail work
+- Wireless Bluetooth operation
+- Mouse control via 25mm trackball
+- Multiple layers accessible via combos and hold actions
 - RGB underglow effects
-- Rotary encoder for volume and other functions
-- Low power consumption for extended battery life
-
-## Directory Structure
-
-```
-zmk-config-lizball/
-├── .github/
-│   └── workflows/
-│       └── build.yml
-├── config/
-│   ├── boards/
-│   │   └── shields/
-│   │       └── lizball/
-│   │           ├── Kconfig.defconfig
-│   │           ├── Kconfig.shield
-│   │           ├── lizball.conf
-│   │           ├── lizball.keymap
-│   │           ├── lizball.overlay
-│   │           └── lizball.zmk.yml
-│   └── west.yml
-└── build.yaml
-```
+- Rotary encoder for volume control and more
+- Battery-saving power management
+- PMW3610 Smart Algorithm for improved tracking
 
 ## Building the Firmware
 
-The firmware can be built automatically using GitHub Actions. Each commit to the repository will trigger a build.
+### Prerequisites
 
-To build locally:
+1. A GitHub account
+2. This repository forked to your GitHub account
 
-1. Install the ZMK development environment following the [ZMK Documentation](https://zmk.dev/docs/development/setup)
+### Building with GitHub Actions (Recommended)
+
+1. Push any changes to your fork
+2. GitHub Actions will automatically build the firmware
+3. Download the firmware from the "Actions" tab after the build completes
+
+### Building Locally
+
+If you want to build the firmware locally:
+
+1. Follow the ZMK [development setup guide](https://zmk.dev/docs/development/setup)
 2. Clone this repository
-3. Run:
+3. Run the following commands:
 
 ```bash
 west init -l config
@@ -61,81 +49,59 @@ west update
 west build -b seeeduino_xiao_ble -d build/lizball -- -DSHIELD=lizball
 ```
 
-## Keyboard Layout and Layers
+4. The built firmware will be at `build/lizball/zephyr/zmk.uf2`
 
-### Layer 0: Default
-- Left Button: Right Click (hold for Mouse Layer)
-- Middle Button: Middle Click
-- Right Button: Left Click
-- Rotary Encoder: Volume Up/Down
+## Flashing the Firmware
 
-### Layer 1: Mouse Layer
-- Activated automatically when trackball is moved or by holding left button
-- Buttons function as normal mouse buttons
-- Rotary Encoder: Page Up/Down
+1. Connect your Xiao BLE in bootloader mode (press reset button twice)
+2. Copy the `zmk.uf2` file to the USB drive that appears
+3. The keyboard will automatically restart with the new firmware
 
-### Layer 2: Scroll Layer
-- Activated by combo of middle + right buttons
-- Trackball acts as a scroll wheel
-- Rotary Encoder: Scroll Up/Down
+## Keyboard Layout
 
-### Layer 3: Precision/Snipe Layer
-- Lower sensitivity for detailed work
-- Rotary Encoder: Left/Right
+The LizBall has a simple 3-key layout with a rotary encoder and uses a PMW3610 trackball for mouse control:
 
-### Layer 4: Bluetooth Layer
-- Activated by combo of left + middle buttons
-- Left Button: BT Profile 0
-- Middle Button: BT Profile 1
-- Right Button: BT Clear
-- Rotary Encoder: Brightness Up/Down
+```
+[EC12 Encoder] [1.25u] [25mm Trackball] [1.25u] [1.25u]
+```
 
-### Layer 5: RGB Control Layer
-- Activated by combo of all three buttons
-- Left Button: RGB Toggle
-- Middle Button: RGB Effect
-- Right Button: RGB Brightness
-- Rotary Encoder: RGB Brightness Up/Down
+### Default Layer Mapping
 
-## Hardware Integration
+- **Left Button**: Middle-click (hold for Layer 4 - BT controls)
+- **Middle Button**: Right-click
+- **Right Button**: Left-click (hold for Layer 3 - Snipe mode)
+- **Encoder Press**: Toggle Layer 2 (Scroll mode)
+- **Encoder Rotation**: Volume up/down by default
 
-### PMW3610 Trackball Wiring
+### Layer Functionality
 
-The PMW3610 sensor requires specific wiring:
+- **Layer 1 (Mouse)**: Automatically activated when trackball is moved
+- **Layer 2 (Scroll)**: Trackball controls scrolling
+- **Layer 3 (Snipe)**: Precision/slow trackball movement
+- **Layer 4 (Bluetooth)**: Bluetooth profile switching
+- **Layer 5 (RGB)**: RGB underglow controls
 
-| PMW3610 Pin | Function | Connect To |
-|-------------|----------|------------|
-| 1           | SCLK     | Xiao D5 (SCL) |
-| 2           | SDIO     | Xiao D4 (SDA) |
-| 3           | GND      | GND |
-| 4           | NC       | Not Connected |
-| 5           | NCS      | Xiao D7 (RX) |
-| 6           | VDDIO    | 3.3V |
-| 7           | NRESET   | 3.3V through 2MΩ resistor |
-| 8           | MOTION   | Xiao D6 (TX) |
-| 9-16        | Other pins | See PMW3610 datasheet |
+## Customizing
 
-### Rotary Encoder Wiring
+### Keymap
 
-| EC12 Pin | Function | Connect To |
-|----------|----------|------------|
-| A        | A        | Xiao D3 (A3) with pull-up |
-| C        | Common   | GND |
-| B        | B        | Xiao D2 (A2) with pull-up |
-| SW1      | Switch   | Xiao D1 (A1) |
-| SW2      | Switch   | GND |
+Edit the `config/boards/shields/lizball/lizball.keymap` file to change the key mappings and layer functions.
 
-### RGB LEDs
+### Hardware Configuration
 
-The SK6812mini-E LEDs are connected in series to Xiao D0 (A0).
+If you modify the hardware design, update the pin assignments in `config/boards/shields/lizball/lizball.overlay`.
 
-## Power Management Tips
+### Settings
 
-- Enable deep sleep for longer battery life
-- Set appropriate downshift times for the PMW3610 sensor
-- Use the lowest RGB brightness needed for visual feedback
-- Consider disabling RGB when operating on battery power
+Edit `config/boards/shields/lizball/lizball.conf` to adjust trackball sensitivity, RGB settings, and power management.
 
-## License
+## Troubleshooting
 
-This project is released under the MIT License.
+- If the trackball doesn't respond, check SPI connections and ensure the PMW3610 is correctly wired
+- For battery life issues, adjust sleep settings in the configuration
+- For Bluetooth problems, try clearing the bond using the BT_CLR key combo
+
+## Credits
+
+- Based on the PMW3610 driver implementation from [menbou0202](https://github.com/menbou0202/zmk-pmw3610-driver)
+- Inspired by the [Nape trackball](https://men-bou.net/nape-trackball-buildguide/)

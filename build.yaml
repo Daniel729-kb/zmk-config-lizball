@@ -2,4 +2,3 @@
 include:
   - board: seeeduino_xiao_ble
     shield: lizball
-    cmake-args: -DCONFIG_SIZE_OPTIMIZATIONS=y

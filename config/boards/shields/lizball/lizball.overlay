@@ -2,7 +2,7 @@
 
 / {
     chosen {
-        zmk,kscan = &default_kscan;
+        zmk,kscan = &kscan0;
         zmk,matrix_transform = &default_transform;
     };
 
@@ -15,14 +15,14 @@
         >;
     };
 
-    default_kscan: kscan {
+    kscan0: kscan {
         compatible = "zmk,kscan-gpio-direct";
-        label = "default_kscan";
+        label = "KSCAN";
 
         input-gpios =
-            <&xiao_d 10 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Switch 1
-            <&xiao_d 9  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Switch 2
-            <&xiao_d 8  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;  // Switch 3
+            <&xiao_d 10 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Switch 1 (left)
+            <&xiao_d 9  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>,  // Switch 2 (center)
+            <&xiao_d 8  (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;  // Switch 3 (right)
     };
 
     encoder: encoder {
@@ -38,18 +38,31 @@
         sensors = <&encoder>;
     };
 
+    // SK6812 RGB LEDs for underglow
+    led_strip: led_strip {
+        compatible = "zmk,underglow";
+        chain-length = <3>;
+        // Connect to an unused GPIO pin on the Xiao
+        spi-max-frequency = <4000000>;
+        // Adjust based on actual connection
+        led-gpios = <&xiao_d 1 GPIO_ACTIVE_HIGH>; 
+    };
+
     trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
+        scroller {
+            layers = <2>;  // Layer 2 will be used for scrolling mode
+        };
     };
 };
 
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,  // P0.05 (D5/SCL)
-                  <NRF_PSEL(SPIM_MOSI, 0, 4)>,   // P0.04 (D4/SDA)
-                  <NRF_PSEL(SPIM_MISO, 0, 4)>;   // Same pin - SDIO bidirectional
+            psels = <NRF_PSEL(SPIM_SCK, 0, 5)>,  // SCLK - P0.05 (D5/SCL)
+                  <NRF_PSEL(SPIM_MOSI, 0, 4)>,   // SDIO - P0.04 (D4/SDA)
+                  <NRF_PSEL(SPIM_MISO, 0, 4)>;   // SDIO - Same pin (bidirectional)
         };
     };
 
@@ -71,45 +84,17 @@
     pinctrl-0 = <&spi0_default>;
     pinctrl-1 = <&spi0_sleep>;
     pinctrl-names = "default", "sleep";
-    cs-gpios = <&xiao_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  // P1.12 (D7/RX)
+    cs-gpios = <&xiao_d 7 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  // NCS - P1.12 (D7/RX)
     
     trackball: trackball@0 {
         status = "okay";
         compatible = "pixart,pmw3610";
         reg = <0>;
         spi-max-frequency = <2000000>;
-        irq-gpios = <&xiao_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  // P1.11 (D6/TX)
+        irq-gpios = <&xiao_d 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;  // MOTION - P1.11 (D6/TX)
         
         scroll-layers = <2>;    // Layer 2 for scrolling
         snipe-layers = <3>;     // Layer 3 for precision movement
         automouse-layer = <1>;  // Layer 1 for mouse control
-    };
-};
-
-/ {
-    chosen {
-        zmk,underglow = &led_strip;
-    };
-    
-    // RGB Underglow configuration
-    ext-power {
-        compatible = "zmk,ext-power-generic";
-        label = "EXT_POWER";
-        control-gpios = <&xiao_d 1 GPIO_ACTIVE_HIGH>;
-    };
-};
-
-&xiao_spi { status = "disabled"; };
-
-&gpio0 {
-    status = "okay";
-};
-
-/ {
-    led_strip: ws2812 {
-        compatible = "worldsemi,ws2812-gpio";
-        gpios = <&xiao_d 0 GPIO_ACTIVE_HIGH>;
-        chain-length = <3>; /* number of LEDs */
-        color-mapping = <LED_COLOR_ID_GREEN LED_COLOR_ID_RED LED_COLOR_ID_BLUE>;
     };
 };
