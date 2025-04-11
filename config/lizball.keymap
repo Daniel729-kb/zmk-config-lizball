@@ -5,24 +5,11 @@
 
 / {
     behaviors {
-        // Encoder button: short press = mute, long press = fn layer
-        enc_btn: encoder_button {
-            compatible = "zmk,behavior-hold-tap";
-            label = "ENCODER_BUTTON";
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            quick-tap-ms = <150>;
-            flavor = "hold-preferred";
-            bindings = <&mo>, <&kp>;
-        };
-        
-        // Layer-tap for mouse buttons
-        lt_mouse: layer_tap_mouse {
+        lt_m: layer_tap_mouse {
             compatible = "zmk,behavior-hold-tap";
             label = "LAYER_TAP_MOUSE";
             #binding-cells = <2>;
             tapping-term-ms = <200>;
-            quick-tap-ms = <150>;
             flavor = "tap-preferred";
             bindings = <&mo>, <&mkp>;
         };
@@ -31,86 +18,76 @@
     combos {
         compatible = "zmk,combos";
         
-        // Combo to access orientation selection layer
-        combo_orient_layer {
+        combo_orient {
             timeout-ms = <50>;
-            key-positions = <0 2>; // Left + Right buttons
-            bindings = <&mo 4>;    // Activate orientation layer
+            key-positions = <0 2>;
+            bindings = <&mo 4>;
         };
         
-        // Combo to access Bluetooth control layer
-        combo_bt_layer {
+        combo_bt {
             timeout-ms = <50>;
-            key-positions = <1 2>; // Middle + Right buttons
-            bindings = <&mo 5>;    // Activate BT layer
+            key-positions = <1 2>;
+            bindings = <&mo 5>;
         };
     };
 
     keymap {
         compatible = "zmk,keymap";
         
-        // Default position (USB port left)
         default_layer {
             bindings = 
-                &lt_mouse 3 LCLK  &mkp MCLK  &lt_mouse 2 RCLK
+                &lt_m 3 LCLK  &mkp MCLK  &lt_m 2 RCLK
             >;
             sensor-bindings = <&inc_dec_kp C_VOL_UP C_VOL_DN>;
         };
         
-        // USB port down (90° clockwise from default)
         down_layer {
             bindings = 
-                &lt_mouse 3 LCLK  &mkp MCLK  &lt_mouse 2 RCLK
+                &lt_m 3 LCLK  &mkp MCLK  &lt_m 2 RCLK
             >;
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
         };
         
-        // Scroll layer (hold right button)
         scroll_layer {
             bindings = 
                 &trans  &trans  &trans
             >;
-            sensor-bindings = <&inc_dec_kp C_AC_SCROLL_UP C_AC_SCROLL_DOWN>;
+            sensor-bindings = <&inc_dec_kp UP DOWN>;
         };
         
-        // Function layer (hold left button)
         function_layer {
             bindings = 
                 &trans  &kp C_MUTE  &bootloader
             >;
-            sensor-bindings = <&inc_dec_kp C_BRI_UP C_BRI_DN>;
+            sensor-bindings = <&inc_dec_kp RIGHT LEFT>;
         };
         
-        // Orientation selection layer (combo)
         orientation_layer {
             bindings = 
-                &to 0  &to 1  &to 6  // USB left, USB down, USB up
+                &to 0  &to 1  &to 6
             >;
-            sensor-bindings = <&inc_dec_kp RIGHT LEFT>;  // For navigation
+            sensor-bindings = <&inc_dec_kp TAB LS(TAB)>;
         };
         
-        // Bluetooth control layer (combo)
         bluetooth_layer {
             bindings = 
                 &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_CLR
             >;
-            sensor-bindings = <&inc_dec_kp BT_PRV BT_NXT>;
+            sensor-bindings = <&inc_dec_kp HOME END>;
         };
         
-        // USB port up (90° counterclockwise from default)
         up_layer {
             bindings = 
-                &lt_mouse 3 LCLK  &mkp MCLK  &lt_mouse 2 RCLK
+                &lt_m 3 LCLK  &mkp MCLK  &lt_m 2 RCLK
             >;
             sensor-bindings = <&inc_dec_kp PG_UP PG_DN>;
         };
-
-        // USB port right (180° rotation from default)
+        
         right_layer {
             bindings = 
-                &lt_mouse 3 RCLK  &mkp MCLK  &lt_mouse 2 LCLK  // Reversed button order
+                &lt_m 3 RCLK  &mkp MCLK  &lt_m 2 LCLK
             >;
-            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;  // Reversed encoder
+            sensor-bindings = <&inc_dec_kp C_VOL_DN C_VOL_UP>;
         };
     };
 };
