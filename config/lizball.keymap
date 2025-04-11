@@ -5,13 +5,7 @@
 
 / {
     behaviors {
-        lt_m: layer_tap_mouse {
-            compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_MOUSE";
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            flavor = "tap-preferred";
-            bindings = <&mo>, <&mkp>;
+
         };
     };
     
